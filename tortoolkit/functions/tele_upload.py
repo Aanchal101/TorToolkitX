@@ -57,7 +57,7 @@ async def upload_handel(
     # logging.info("Uploading Now:- {}".format(path))
 
     if os.path.isdir(path):
-        logging.info("Uploading the directory:- {}".format(path))
+        logging.info(f"Uploading the directory:- {path}")
 
         directory_contents = os.listdir(path)
         directory_contents.sort()
@@ -81,18 +81,12 @@ async def upload_handel(
 
         if not from_in:
             updb.register_upload(message.chat_id, message.id)
-            if user_msg is None:
-                sup_mes = await message.get_reply_message()
-            else:
-                sup_mes = user_msg
-
+            sup_mes = await message.get_reply_message() if user_msg is None else user_msg
             if task is not None:
                 await task.set_message(message)
                 await task.set_original_message(sup_mes)
 
-            data = "upcancel {} {} {}".format(
-                message.chat_id, message.id, sup_mes.sender_id
-            )
+            data = f"upcancel {message.chat_id} {message.id} {sup_mes.sender_id}"
             buts = [KeyboardButtonCallback("Cancel upload.", data.encode("UTF-8"))]
             message = await message.edit(buttons=buts)
 
@@ -118,15 +112,13 @@ async def upload_handel(
             if updb.get_cancel_status(message.chat_id, message.id):
                 task.cancel = True
                 await task.set_inactive()
-                await message.edit(
-                    "{} - Canceled By user.".format(message.text), buttons=None
-                )
+                await message.edit(f"{message.text} - Canceled By user.", buttons=None)
             else:
                 await message.edit(buttons=None)
             updb.deregister_upload(message.chat_id, message.id)
 
     else:
-        logging.info("Uploading the file:- {}".format(path))
+        logging.info(f"Uploading the file:- {path}")
         if os.path.getsize(path) > get_val("TG_UP_LIMIT"):
             # the splitted file will be considered as a single upload ;)
 
@@ -150,14 +142,12 @@ async def upload_handel(
                     "**FILE LARGER THAN 2GB, SPLITTING NOW...**\n**Using Algo FFMPEG VIDEO SPLIT**"
                 )
                 split_dir = await vids_helpers.split_file(path, get_val("TG_UP_LIMIT"))
-                await todel.delete()
             else:
                 todel = await message.reply(
                     "**FILE LARGER THAN 2GB, SPLITTING NOW...**\n**`Using Algo FFMPEG ZIP SPLIT`**"
                 )
                 split_dir = await zip7_utils.split_in_zip(path, get_val("TG_UP_LIMIT"))
-                await todel.delete()
-
+            await todel.delete()
             if task is not None:
                 await task.add_a_dir(split_dir)
 
@@ -166,18 +156,12 @@ async def upload_handel(
 
             if not from_in:
                 updb.register_upload(message.chat_id, message.id)
-                if user_msg is None:
-                    sup_mes = await message.get_reply_message()
-                else:
-                    sup_mes = user_msg
-
+                sup_mes = await message.get_reply_message() if user_msg is None else user_msg
                 if task is not None:
                     await task.set_message(message)
                     await task.set_original_message(sup_mes)
 
-                data = "upcancel {} {} {}".format(
-                    message.chat_id, message.id, sup_mes.sender_id
-                )
+                data = f"upcancel {message.chat_id} {message.id} {sup_mes.sender_id}"
                 buts = [KeyboardButtonCallback("Cancel upload.", data.encode("UTF-8"))]
                 await message.edit(buttons=buts)
 
@@ -209,21 +193,15 @@ async def upload_handel(
                 if updb.get_cancel_status(message.chat_id, message.id):
                     task.cancel = True
                     await task.set_inactive()
-                    await message.edit(
-                        "{} - Canceled By user.".format(message.text), buttons=None
-                    )
+                    await message.edit(f"{message.text} - Canceled By user.", buttons=None)
                 else:
                     await message.edit(buttons=None)
                 updb.deregister_upload(message.chat_id, message.id)
-            # spliting file logic blah blah
+                    # spliting file logic blah blah
         else:
             if not from_in:
                 updb.register_upload(message.chat_id, message.id)
-                if user_msg is None:
-                    sup_mes = await message.get_reply_message()
-                else:
-                    sup_mes = user_msg
-
+                sup_mes = await message.get_reply_message() if user_msg is None else user_msg
                 if task is not None:
                     await task.set_message(message)
                     await task.set_original_message(sup_mes)
@@ -232,9 +210,7 @@ async def upload_handel(
                     await task.set_message(message)
                     await task.set_original_message(sup_mes)
 
-                data = "upcancel {} {} {}".format(
-                    message.chat_id, message.id, sup_mes.sender_id
-                )
+                data = f"upcancel {message.chat_id} {message.id} {sup_mes.sender_id}"
                 buts = [KeyboardButtonCallback("Cancel upload.", data.encode("UTF-8"))]
                 await message.edit(buttons=buts)
             # print(updb)
@@ -251,9 +227,7 @@ async def upload_handel(
                 if updb.get_cancel_status(message.chat_id, message.id):
                     task.cancel = True
                     await task.set_inactive()
-                    await message.edit(
-                        "{} - Canceled By user.".format(message.text), buttons=None
-                    )
+                    await message.edit(f"{message.text} - Canceled By user.", buttons=None)
                 else:
                     await message.edit(buttons=None)
                 updb.deregister_upload(message.chat_id, message.id)
