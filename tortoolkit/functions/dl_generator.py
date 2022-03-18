@@ -19,7 +19,6 @@ async def generate_directs(url):
     ):
         return "**ERROR:** Unsupported URL!"
 
-    # mediafire.com
     elif "mediafire.com" in url:
         try:
             link = re.findall(r"\bhttps?://.*mediafire\.com\S+", url)[0]
@@ -34,7 +33,6 @@ async def generate_directs(url):
         except:
             return "**ERROR:** Cant't download, double check your mediafire link!"
 
-    # disk.yandex.com
     elif "yadi.sk" in url or "disk.yandex.com" in url:
         try:
             link = re.findall(
@@ -55,7 +53,6 @@ async def generate_directs(url):
             torlog.exception("Ayee jooo")
             return "**ERROR:** Cant't download, the yadisk file not found or dowmload limit reached!"
 
-    # zippyshare.com
     elif "zippyshare.com" in url:
         try:
             link = re.findall(r"\bhttps?://.*zippyshare\.com\S+", url)[0]
@@ -81,7 +78,6 @@ async def generate_directs(url):
         except:
             return "**ERROR:** Cant't download, double check your zippyshare link!"
 
-    # racaty.net
     elif "racaty.net" in url:
         try:
             link = re.findall(r"\bhttps?://.*racaty\.net\S+", url)[0]
@@ -115,4 +111,4 @@ async def generate_directs(url):
         if restext["success"]:
             return dl_link
         else:
-            return "**ERROR:** Cant't download, {}.".format(restext["value"])
+            return f"""**ERROR:** Cant't download, {restext["value"]}."""
